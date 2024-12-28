@@ -65,8 +65,8 @@ class AddCartServiceTest {
         verify(cartRepository).save(cart);
 
         assertThat(cart.lineItems()).hasSize(1);
-        assertThat(cart.lineItems().getFirst().product()).isEqualTo(TEST_PRODUCT_1);
-        assertThat(cart.lineItems().getFirst().quantity()).isEqualTo(2);
+        assertThat(cart.lineItems().get(0).product()).isEqualTo(TEST_PRODUCT_1);
+        assertThat(cart.lineItems().get(0).quantity()).isEqualTo(2);
     }
 
     @Test

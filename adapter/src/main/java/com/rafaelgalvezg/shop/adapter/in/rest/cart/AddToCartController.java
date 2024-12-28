@@ -6,28 +6,27 @@ import com.rafaelgalvezg.shop.model.cart.Cart;
 import com.rafaelgalvezg.shop.model.cart.NotEnoughItemsInStockException;
 import com.rafaelgalvezg.shop.model.customer.CustomerId;
 import com.rafaelgalvezg.shop.model.product.ProductId;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.ControllerCommons.clientErrorException;
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.CustomerIdParser.parseCustomerId;
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.ProductIdParser.parseProductId;
 
-@Path("/carts")
-@Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
+@RestController
+@RequestMapping("/carts")
 public class AddToCartController {
 
     private final AddToCartUseCase addToCartUseCase;
 
-    @POST
-    @Path("/{customerId}/line-items")
+    @PostMapping("/{customerId}/line-items")
     public CartWebModel addLineItem(
-            @PathParam("customerId") String customerIdString,
-            @QueryParam("productId") String productIdString,
-            @QueryParam("quantity") int quantity){
+            @PathVariable("customerId") String customerIdString,
+            @RequestParam("productId") String productIdString,
+            @RequestParam("quantity") int quantity){
         CustomerId customerId = parseCustomerId(customerIdString);
         ProductId productId = parseProductId(productIdString);
 
@@ -36,10 +35,10 @@ public class AddToCartController {
             return CartWebModel.fromDomainModel(cart);
         }catch (ProductNotFoundException e){
             throw clientErrorException(
-                    Response.Status.BAD_REQUEST, "The requested product does not exist");
+                    HttpStatus.BAD_REQUEST, "The requested product does not exist");
         }catch (NotEnoughItemsInStockException e){
             throw clientErrorException(
-                    Response.Status.BAD_REQUEST, "Only %d items in stock".formatted(e.itemInStock()));
+                    HttpStatus.BAD_REQUEST, "Only %d items in stock".formatted(e.itemInStock()));
         }
     }
 }

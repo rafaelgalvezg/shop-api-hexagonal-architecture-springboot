@@ -10,6 +10,8 @@ import com.rafaelgalvezg.shop.model.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,31 +19,30 @@ import static com.rafaelgalvezg.shop.model.money.TestMoneyFactory.euros;
 import static com.rafaelgalvezg.shop.model.product.TestProductFactory.createTestProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AbstractCartRepositoryTest<
-        T extends CartRepository, U extends ProductRepository> {
+public abstract class AbstractCartRepositoryTest {
 
     private static final Product TEST_PRODUCT_1 = createTestProduct(euros(19, 99));
     private static final Product TEST_PRODUCT_2 = createTestProduct(euros(1, 49));
 
     private static final AtomicInteger CUSTOMER_ID_SEQUENCE_GENERATOR = new AtomicInteger();
 
-    private T cartRepository;
+    @Autowired
+    CartRepository cartRepository;
+    @Autowired
+    ProductRepository productRepository;
+
 
     @BeforeEach
     void initRepositories() {
-        cartRepository = createCartRepository();
         persistTestProducts();
     }
 
-    protected abstract T createCartRepository();
 
     private void persistTestProducts() {
-        U productRepository = createProductRepository();
         productRepository.save(TEST_PRODUCT_1);
         productRepository.save(TEST_PRODUCT_2);
     }
 
-    protected abstract U createProductRepository();
 
     @Test
     void givenACustomerIdForWhichNoCartIsPersisted_findByCustomerId_returnsAnEmptyOptional() {

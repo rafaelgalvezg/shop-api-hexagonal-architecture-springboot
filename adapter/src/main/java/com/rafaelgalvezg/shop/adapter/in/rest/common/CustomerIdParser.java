@@ -1,7 +1,7 @@
 package com.rafaelgalvezg.shop.adapter.in.rest.common;
 
 import com.rafaelgalvezg.shop.model.customer.CustomerId;
-import jakarta.ws.rs.core.Response;
+import org.springframework.http.HttpStatus;
 
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.ControllerCommons.clientErrorException;
 
@@ -12,7 +12,7 @@ public class CustomerIdParser {
         try{
             return new CustomerId(Integer.parseInt(string));
         }catch (IllegalArgumentException e){
-            throw clientErrorException(Response.Status.BAD_REQUEST, "Invalid 'customerId'");
+            throw clientErrorException(HttpStatus.BAD_REQUEST, "Invalid 'customerId'");
         }
     }
 }

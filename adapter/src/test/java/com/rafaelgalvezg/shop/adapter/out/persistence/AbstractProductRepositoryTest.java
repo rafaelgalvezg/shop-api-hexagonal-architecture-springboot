@@ -3,24 +3,20 @@ package com.rafaelgalvezg.shop.adapter.out.persistence;
 import com.rafaelgalvezg.shop.application.port.out.persistence.ProductRepository;
 import com.rafaelgalvezg.shop.model.product.Product;
 import com.rafaelgalvezg.shop.model.product.ProductId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AbstractProductRepositoryTest<T extends ProductRepository> {
+public abstract class AbstractProductRepositoryTest {
 
-    private T productRepository;
 
-    @BeforeEach
-    void initRepository() {
-        productRepository = createProductRepository();
-    }
+    @Autowired
+    ProductRepository productRepository;
 
-    protected abstract T createProductRepository();
 
     @Test
     void givenTestProductsAndATestProductId_findById_returnsATestProduct() {
@@ -41,8 +37,7 @@ public abstract class AbstractProductRepositoryTest<T extends ProductRepository>
     }
 
     @Test
-    void
-    givenTestProductsAndASearchQueryNotMatchingAndProduct_findByNameOrDescription_returnsAnEmptyList() {
+    void givenTestProductsAndASearchQueryNotMatchingAndProduct_findByNameOrDescription_returnsAnEmptyList() {
         String query = "not matching any product";
 
         List<Product> products = productRepository.findByNameOrDescription(query);
@@ -51,8 +46,7 @@ public abstract class AbstractProductRepositoryTest<T extends ProductRepository>
     }
 
     @Test
-    void
-    givenTestProductsAndASearchQueryMatchingOneProduct_findByNameOrDescription_returnsThatProduct() {
+    void givenTestProductsAndASearchQueryMatchingOneProduct_findByNameOrDescription_returnsThatProduct() {
         String query = "lights";
 
         List<Product> products = productRepository.findByNameOrDescription(query);
@@ -61,8 +55,7 @@ public abstract class AbstractProductRepositoryTest<T extends ProductRepository>
     }
 
     @Test
-    void
-    givenTestProductsAndASearchQueryMatchingTwoProducts_findByNameOrDescription_returnsThoseProducts() {
+    void givenTestProductsAndASearchQueryMatchingTwoProducts_findByNameOrDescription_returnsThoseProducts() {
         String query = "monitor";
 
         List<Product> products = productRepository.findByNameOrDescription(query);

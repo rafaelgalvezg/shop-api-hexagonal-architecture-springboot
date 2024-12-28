@@ -1,10 +1,10 @@
-package com.rafaelgalvezg.shop.adapter.out.persistence.inmemory;
+package com.rafaelgalvezg.shop.adapter.out.persistence.jpa;
 
 import com.rafaelgalvezg.shop.adapter.out.persistence.AbstractProductRepositoryTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("test")
-class InMemoryProductRepositoryTest extends AbstractProductRepositoryTest {
+@ActiveProfiles("test-whit-mysql")
+public class JpaProductRepositoryTest extends AbstractProductRepositoryTest {
 }

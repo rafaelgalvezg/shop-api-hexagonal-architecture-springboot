@@ -2,25 +2,29 @@ package com.rafaelgalvezg.shop.adapter.in.rest.cart;
 
 import com.rafaelgalvezg.shop.application.port.in.cart.EmptyCartUseCase;
 import com.rafaelgalvezg.shop.model.customer.CustomerId;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.CustomerIdParser.parseCustomerId;
 
-@Path("/carts")
-@Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
+@RestController
+@RequestMapping("/carts")
 public class EmptyCartController {
     private final EmptyCartUseCase emptyCartUseCase;
 
-    @DELETE
-    @Path("{customerId}")
-    public void deleteCart(@PathParam("customerId") String customerIdString){
+    @DeleteMapping("{customerId}")
+    public ResponseEntity<Void> deleteCart(@PathVariable("customerId") String customerIdString){
         CustomerId customerId = parseCustomerId(customerIdString);
-        emptyCartUseCase.emptyCart(customerId);
+
+        try {
+            emptyCartUseCase.emptyCart(customerId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+
     }
 }

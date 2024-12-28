@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class CartLineItemJpaEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
