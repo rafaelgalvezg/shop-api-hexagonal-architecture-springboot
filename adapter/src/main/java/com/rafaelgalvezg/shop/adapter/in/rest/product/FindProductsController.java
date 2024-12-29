@@ -4,6 +4,7 @@ import com.rafaelgalvezg.shop.application.port.in.product.FindProductsUseCase;
 import com.rafaelgalvezg.shop.model.product.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ public class FindProductsController {
 
     private final FindProductsUseCase findProductsUseCase;
 
+    @PreAuthorize("hasRole('ROLE_spring-keycloak-client_view-products')")
     @GetMapping
     public List<ProductInListWebModel> findProducts(@RequestParam(value = "query", required = false) String query){
     if(query == null){

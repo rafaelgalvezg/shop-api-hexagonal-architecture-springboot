@@ -10,6 +10,7 @@ import com.rafaelgalvezg.shop.model.customer.CustomerId;
 import com.rafaelgalvezg.shop.model.product.Product;
 import com.rafaelgalvezg.shop.model.product.ProductId;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,6 +34,8 @@ class CartsControllerTest {
     private static final Product TEST_PRODUCT_1 = createTestProduct(euros(19, 99));
     private static final Product TEST_PRODUCT_2 = createTestProduct(euros(25, 99));
 
+    private String token;
+
     @LocalServerPort
     private int testPort;
 
@@ -43,12 +46,36 @@ class CartsControllerTest {
     @MockBean
     EmptyCartUseCase emptyCartUseCase;
 
+    @BeforeEach
+    void loadToken() {
+        token = given()
+                .port(testPort)
+                .param("grant_type", "password")
+                .param("realm", "spring-keycloak-realm")
+                .param("client_id", "spring-keycloak-client")
+                .param("username", "admin")
+                .param("password", "admin")
+                .param("client_secret", "iKCL0NjcJKRUUriAlxNYRmZBlyQsj6f8")
+                .param("Content-Type", "application/x-www-form-urlencoded")
+                .when()
+                .post("http://localhost:8383/realms/spring-keycloak-realm/protocol/openid-connect/token")
+                .then()
+                .extract()
+                .jsonPath()
+                .get("access_token");
+    }
+
 
     @Test
     void givenASyntacticallyInvalidCustomerId_getCart_returnsAnError() {
         String customerId = "foo";
 
-        Response response = given().port(testPort).get("/carts/" + customerId).then().extract().response();
+        Response response = given()
+                .port(testPort)
+                .header("Authorization", "Bearer " + token)
+                .get("/carts/" + customerId)
+                .then().extract()
+                .response();
 
         assertThatResponseIsError(response, BAD_REQUEST, "Invalid 'customerId'");
     }
@@ -64,7 +91,13 @@ class CartsControllerTest {
         when(getCartUseCase.getCart(customerId)).thenReturn(cart);
 
         Response response =
-                given().port(testPort).get("/carts/" + customerId.value()).then().extract().response();
+                given()
+                        .port(testPort)
+                        .header("Authorization", "Bearer " + token)
+                        .get("/carts/" + customerId.value())
+                        .then()
+                        .extract()
+                        .response();
 
         assertThatResponseIsCart(response, cart);
     }
@@ -83,6 +116,7 @@ class CartsControllerTest {
         Response response =
                 given()
                         .port(testPort)
+                        .header("Authorization", "Bearer " + token)
                         .queryParam("productId", productId.value())
                         .queryParam("quantity", quantity)
                         .post("/carts/" + customerId.value() + "/line-items")
@@ -101,6 +135,7 @@ class CartsControllerTest {
         Response response =
                 given()
                         .port(testPort)
+                        .header("Authorization", "Bearer " + token)
                         .queryParam("productId", productId)
                         .queryParam("quantity", quantity)
                         .post("/carts/" + TEST_CUSTOMER_ID.value() + "/line-items")
@@ -122,6 +157,7 @@ class CartsControllerTest {
         Response response =
                 given()
                         .port(testPort)
+                        .header("Authorization", "Bearer " + token)
                         .queryParam("productId", productId.value())
                         .queryParam("quantity", quantity)
                         .post("/carts/" + TEST_CUSTOMER_ID.value() + "/line-items")
@@ -143,6 +179,7 @@ class CartsControllerTest {
         Response response =
                 given()
                         .port(testPort)
+                        .header("Authorization", "Bearer " + token)
                         .queryParam("productId", productId.value())
                         .queryParam("quantity", quantity)
                         .post("/carts/" + TEST_CUSTOMER_ID.value() + "/line-items")
@@ -157,6 +194,7 @@ class CartsControllerTest {
     void givenACustomerId_deleteCart_invokesDeleteCartUseCaseAndReturnsUpdatedCart() {
         given()
                 .port(testPort)
+                .header("Authorization", "Bearer " + token)
                 .delete("/carts/" + TEST_CUSTOMER_ID.value())
                 .then()
                 .statusCode(NO_CONTENT.value());

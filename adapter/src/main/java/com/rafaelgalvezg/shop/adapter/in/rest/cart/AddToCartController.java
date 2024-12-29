@@ -6,9 +6,9 @@ import com.rafaelgalvezg.shop.model.cart.Cart;
 import com.rafaelgalvezg.shop.model.cart.NotEnoughItemsInStockException;
 import com.rafaelgalvezg.shop.model.customer.CustomerId;
 import com.rafaelgalvezg.shop.model.product.ProductId;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.rafaelgalvezg.shop.adapter.in.rest.common.ControllerCommons.clientErrorException;
@@ -22,6 +22,7 @@ public class AddToCartController {
 
     private final AddToCartUseCase addToCartUseCase;
 
+    @PreAuthorize("hasRole('ROLE_spring-keycloak-client_add-cart')")
     @PostMapping("/{customerId}/line-items")
     public CartWebModel addLineItem(
             @PathVariable("customerId") String customerIdString,

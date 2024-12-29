@@ -4,6 +4,7 @@ import com.rafaelgalvezg.shop.application.port.in.cart.GetCartUseCase;
 import com.rafaelgalvezg.shop.model.cart.Cart;
 import com.rafaelgalvezg.shop.model.customer.CustomerId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import static com.rafaelgalvezg.shop.adapter.in.rest.common.CustomerIdParser.par
 public class GetCartController {
     private final GetCartUseCase getCartUseCase;
 
+    @PreAuthorize("hasRole('ROLE_spring-keycloak-client_view-cart')")
     @GetMapping("/{customerId}")
     public CartWebModel getCart(@PathVariable("customerId") String customerIdString){
         CustomerId customerId = parseCustomerId(customerIdString);
