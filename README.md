@@ -37,6 +37,9 @@ docker run --name hexagonal-mysql -d -p3306:3306 -e MYSQL_DATABASE=shop -e MYSQL
 ```bash
 docker run -- name keycloak -d -p 8383:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:25.0.6 start-dev
 ```
+### Configurar Keycloak
+[Manual de Configuración de Keycloak](docs/manual-configuracion-keycloak.pdf)
+
 
 ## Controladores disponibles
 
