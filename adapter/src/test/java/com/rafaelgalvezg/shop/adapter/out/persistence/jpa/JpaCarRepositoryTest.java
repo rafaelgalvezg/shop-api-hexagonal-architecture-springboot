@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("test-whit-mysql")
-public class JpaCarRepositoryTest extends AbstractCartRepositoryTest {
+@ActiveProfiles("test-with-mysql")
+class JpaCarRepositoryTest extends AbstractCartRepositoryTest {
 
 }
