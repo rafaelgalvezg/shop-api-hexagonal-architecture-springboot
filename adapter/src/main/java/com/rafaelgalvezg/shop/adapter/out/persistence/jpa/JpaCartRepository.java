@@ -26,14 +26,16 @@ public class JpaCartRepository implements CartRepository {
     }
 
     @Override
+    @Transactional
     public Optional<Cart> findByCustomerId (CustomerId customerId){
        return cartRepository.findByCustomerId(customerId.value()).flatMap(CartMapper::toModelEntityOptional);
     }
 
     @Override
     @Transactional
-    public void deleteByCustomerId(CustomerId customerId){
-        CartJpaEntity cartJpaEntity = cartRepository.findByCustomerId(customerId.value()).orElseThrow();
-        cartRepository.delete(cartJpaEntity);
+    public void deleteByCustomerId(CustomerId customerId) {
+        Optional<CartJpaEntity> cartJpaEntityOptional = cartRepository.findByCustomerId(customerId.value());
+        cartJpaEntityOptional.ifPresent(cartRepository::delete);
     }
+
 }
